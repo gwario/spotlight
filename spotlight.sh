@@ -56,7 +56,7 @@ sha256calculated=$(sha256sum "$imagePath" | cut -d " " -f 1)
 
 if [ "$sha256" != "$sha256calculated" ]
 then
-    rm "${imagePath:Q}"
+    	rm "${imagePath:Q}"
 	systemd-cat -t spotlight -p emerg <<< "Checksum incorrect"
 	exit 1
 fi
