@@ -1,5 +1,5 @@
 [Unit]
-Description=Runs Spotlight daily
+Description=Runs Spotlight image download daily
 
 [Timer]
 OnCalendar=daily
