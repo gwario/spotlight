@@ -61,4 +61,4 @@ then
 	exit 1
 fi
 
-systemd-cat -t spotlight -p info <<< "Background changed to $title ($searchTerms)"
+systemd-cat -t spotlight -p info <<< "Background downloaded: $title ($searchTerms)"
