@@ -2,28 +2,21 @@
 
 dataPath="${XDG_DATA_HOME:-$HOME/.local/share}"
 
-spotlightPath="$dataPath/spotlight"
-backgroundsPath="$dataPath/backgrounds"
-
-keepImage=false
+backgroundsPath="$dataPath/spotlight-images"
 
 function showHelp()
 {
-	echo "Usage: $0 [-k] [-d <destination>]"
+	echo "Usage: $0 [-d <destination>]"
 	echo ""
 	echo "Options:"
 	echo "	-h shows this help message"
-	echo "	-k keeps the previous image"
-	echo "	-d stores the image into the given destination. Defaults to \"$HOME/.local/share/backgrounds\"."
+	echo "	-d stores the image into the given destination. Defaults to \"$HOME/.local/share/spotlight-images\"."
 }
 
 while getopts "hkd:" opt
 do
 	case $opt
 	in
-		'k')
-			keepImage=true
-		;;
 		'd')
 			backgroundsPath=$OPTARG
 		;;
@@ -63,23 +56,9 @@ sha256calculated=$(sha256sum "$imagePath" | cut -d " " -f 1)
 
 if [ "$sha256" != "$sha256calculated" ]
 then
+    rm "${imagePath:Q}"
 	systemd-cat -t spotlight -p emerg <<< "Checksum incorrect"
 	exit 1
 fi
 
-gsettings set org.gnome.desktop.background picture-options "zoom"
-gsettings set org.gnome.desktop.background picture-uri "file://$imagePath"
-gsettings set org.gnome.desktop.background picture-uri-dark "file://$imagePath"
-
-mkdir -p "$spotlightPath"
-
-previousImagePath="$(readlink "$spotlightPath/background.jpg")"
-ln -sf "$imagePath" "$spotlightPath/background.jpg"
-
-if [ "$keepImage" = false ] && [ -n "$previousImagePath" ] && [ -f "$previousImagePath" ] && [ "$imagePath" != "$previousImagePath" ]
-then
-	rm "$previousImagePath"
-fi
-
-notify-send "Background changed" "$title ($searchTerms)" --icon=preferences-desktop-wallpaper --urgency=low --hint=string:desktop-entry:spotlight
 systemd-cat -t spotlight -p info <<< "Background changed to $title ($searchTerms)"
