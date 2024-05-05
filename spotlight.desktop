@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Spotlight
-Comment=Fetch a new background image from Spotlight
+Comment=Fetch a new image from Spotlight
 Keywords=background;wallpaper;
 Exec=systemctl start --user spotlight.service
 Icon=preferences-desktop-wallpaper
